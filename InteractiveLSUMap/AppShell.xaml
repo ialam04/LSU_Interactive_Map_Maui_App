@@ -8,6 +8,13 @@
     Title="InteractiveLSUMap">
 
 
+    <!-- Initial Landing Page without navbar -->
+    <ShellContent 
+        x:Name="LandingPage"
+        Route="Landing"
+        ContentTemplate="{DataTemplate local:LandingPage}" />
+
+    <!-- TabBar with navigation tabs -->
     <TabBar>
         <Tab
             Title="Profile"
@@ -16,7 +23,8 @@
         </Tab>
         <Tab
             Title="Map"
-            Icon="map_icon.png">
+            Icon="map_icon.png"
+            Route="map">
             <ShellContent ContentTemplate="{DataTemplate local:MainPage}" />
         </Tab>
         <Tab

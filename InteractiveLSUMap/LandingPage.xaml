@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="InteractiveLSUMap.LandingPage"
+             Title="LandingPage"
+             BackgroundColor="#f6e2ff"
+             Shell.NavBarIsVisible="False">
+
+
+    <VerticalStackLayout x:Name="PageContainer" Opacity="0">
+
+        <Image x:Name="logo"
+            Source="tigerchibi.png"
+            HeightRequest="300"
+            WidthRequest="300"
+            HorizontalOptions="Center"
+            VerticalOptions="Start"
+            />
+
+        <VerticalStackLayout x:Name="SignInContainer">
+            <Label
+                HorizontalOptions="Center"
+                FontSize="35"
+                TranslationY="-75"
+                >
+                LSU Interactive Map
+            </Label>
+
+            <Label FontAttributes="Bold" FontSize="20" TranslationX="45" TranslationY="-25">
+                Log In:
+            </Label>
+
+            <Entry
+                Placeholder="Username"
+                PlaceholderColor="DarkGray"
+                WidthRequest="300"
+                Background="white"
+                TranslationY="-25"
+                />
+            <Entry
+                Placeholder="Password"
+                PlaceholderColor="DarkGray"
+                WidthRequest="300"
+                Background="white"
+                IsPassword="True"
+                Margin="10"
+                TranslationY="-25"
+                />
+
+            <Label FontAttributes="Bold" FontSize="10" TranslationX="-45" HorizontalOptions="End" TranslationY="-30">
+                Note: Please use LSU log in.
+            </Label>
+
+            <Label FontAttributes="Bold" FontSize="20" TranslationX="45" TranslationY="-25">
+                Guest?
+            </Label>
+
+            <Entry
+                Placeholder="Email"
+                PlaceholderColor="DarkGray"
+                WidthRequest="300"
+                Background="white"
+                TranslationY="-25"
+                />
+
+            <Button
+                Text="Enter"
+                WidthRequest="100"
+                FontSize="20"
+                Clicked="OnEnterSignIn"
+                /> 
+        </VerticalStackLayout>
+
+        <HorizontalStackLayout TranslationY="-175">
+            <Image x:Name="claw1" Source="purpleclaw.png" HeightRequest="100" WidthRequest="100" Rotation="15" Opacity="0"/>
+            <Image x:Name="claw2" Source="purpleclaw.png" HeightRequest="100" WidthRequest="100" Rotation="75" Opacity="0"/>
+            <Image x:Name="claw3" Source="purpleclaw.png" HeightRequest="100" WidthRequest="100" Rotation="15" Opacity="0"/>
+            <Image x:Name="claw4" Source="purpleclaw.png" HeightRequest="100" WidthRequest="100" Rotation="75" Opacity="0"/>
+        </HorizontalStackLayout>
+
+
+    </VerticalStackLayout>
+</ContentPage>
