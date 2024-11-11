@@ -28,5 +28,13 @@
 	</array>
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/appicon.appiconset</string>
+	<key>NSCameraUsageDescription</key>
+	<string></string>
+	<key>&lt;string&gt;We need access to your camera to allow you to take photos for your memories.&lt;/string&gt;</key>
+	<string></string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string></string>
+	<key>&lt;string&gt;We need access to your photo library to select photos for your memories.&lt;/string&gt;</key>
+	<string></string>
 </dict>
 </plist>

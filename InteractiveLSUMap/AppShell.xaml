@@ -17,9 +17,9 @@
     <!-- TabBar with navigation tabs -->
     <TabBar>
         <Tab
-            Title="Profile"
-            Icon="person_icon.png">
-            <ShellContent ContentTemplate="{DataTemplate local:ProfilePage}" />
+            Title="Memories"
+            Icon="photo.png">
+            <ShellContent ContentTemplate="{DataTemplate local:MemoriesPage}" />
         </Tab>
         <Tab
             Title="Map"

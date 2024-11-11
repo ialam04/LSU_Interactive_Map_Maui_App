@@ -13,6 +13,7 @@ namespace InteractiveLSUMap
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+                    fonts.AddFont("Aleo-VariableFont_wght.ttf", "Aleo"); // Name it with an alias
                 });
 
 #if DEBUG

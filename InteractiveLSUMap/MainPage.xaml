@@ -3,21 +3,32 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="InteractiveLSUMap.MainPage">
 
-    <AbsoluteLayout>
+    <ScrollView x:Name="scrollView" 
+                HorizontalScrollBarVisibility="Never"
+                VerticalScrollBarVisibility="Never">
         
-        
-        <Image Source="map.png"
-               Aspect="AspectFill"
-               AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
-               AbsoluteLayout.LayoutFlags="All" />
+        <!-- AbsoluteLayout to Position Map and Pins -->
+        <AbsoluteLayout>
+            <!-- Background Map Image -->
+            <Image Source="map_sketch.png"
+                   Aspect="AspectFill"
+                   AbsoluteLayout.LayoutFlags="All"
+                   AbsoluteLayout.LayoutBounds="0, 0, 1, 1" />
 
-        <Button Text="Filter"
-                BackgroundColor="White"
-                TextColor="Black"
-                CornerRadius="100"
-                AbsoluteLayout.LayoutBounds="0.98, 0.01, AutoSize, AutoSize"
-                AbsoluteLayout.LayoutFlags="PositionProportional" />
+            <!-- Clickable Pin 1 -->
+            <ImageButton Source="question_mark_24.png"
+                         AbsoluteLayout.LayoutFlags="PositionProportional"
+                         AbsoluteLayout.LayoutBounds="0.25, 0.5, 20, 20"
+                         Clicked="OnPinClicked" />
 
-    </AbsoluteLayout>
+            <!-- Clickable Pin 2 -->
+            <ImageButton Source="question_mark_24.png"
+                         AbsoluteLayout.LayoutFlags="PositionProportional"
+                         AbsoluteLayout.LayoutBounds="0.6, 0.7, 20, 20"
+                         Clicked="OnPinClicked" />
+
+            <!-- Add more pins as needed -->
+        </AbsoluteLayout>
+    </ScrollView>
 
 </ContentPage>
