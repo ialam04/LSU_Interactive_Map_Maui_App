@@ -15,17 +15,33 @@
                    AbsoluteLayout.LayoutFlags="All"
                    AbsoluteLayout.LayoutBounds="0, 0, 1, 1" />
 
-            <!-- Clickable Pin 1 -->
+            <!-- Clickable Pin Prescott -->
             <ImageButton Source="question_mark_24.png"
                          AbsoluteLayout.LayoutFlags="PositionProportional"
-                         AbsoluteLayout.LayoutBounds="0.25, 0.5, 20, 20"
-                         Clicked="OnPinClicked" />
+                         AbsoluteLayout.LayoutBounds="0.1, 0.545, 20, 20"
+                         Clicked="OnPinClicked" 
+                         CommandParameter="Prescott" />
 
-            <!-- Clickable Pin 2 -->
+            <!-- Clickable Pin Nicholson -->
             <ImageButton Source="question_mark_24.png"
                          AbsoluteLayout.LayoutFlags="PositionProportional"
-                         AbsoluteLayout.LayoutBounds="0.6, 0.7, 20, 20"
-                         Clicked="OnPinClicked" />
+                         AbsoluteLayout.LayoutBounds="0.7, 0.665, 20, 20"
+                         Clicked="OnPinClicked" 
+                         CommandParameter="Nicholson" />
+            
+            <!-- Clickable Pin Coates -->
+            <ImageButton Source="question_mark_24.png"
+                         AbsoluteLayout.LayoutFlags="PositionProportional"
+                         AbsoluteLayout.LayoutBounds="0.6, 0.55, 20, 20"
+                         Clicked="OnPinClicked" 
+                         CommandParameter="Coates" />
+            
+            <!-- Clickable Pin Library -->
+            <ImageButton Source="question_mark_24.png"
+                         AbsoluteLayout.LayoutFlags="PositionProportional"
+                         AbsoluteLayout.LayoutBounds="0.325, 0.31, 20, 20"
+                         Clicked="OnPinClicked" 
+                         CommandParameter="Library" />
 
             <!-- Add more pins as needed -->
         </AbsoluteLayout>

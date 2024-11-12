@@ -35,9 +35,26 @@
 
         private void OnPinClicked(object sender, EventArgs e)
         {
+            var button = sender as ImageButton;
+            var pinId = button?.CommandParameter as string;
+            
             // Show building information for the clicked pin
-            DisplayAlert("Building Information", "Details about this building...", "OK");
+            switch (pinId)
+            {
+                case "Nicholson":
+                    DisplayAlert("Nicholson Hall", "Details about Nicholson Hall...", "OK");
+                    break;
+                case "Prescott":
+                    DisplayAlert("Prescott Hall", "Details about Prescott Hall...", "OK");
+                    break;
+                case "Coates":
+                    DisplayAlert("Coates Hall", "Details about Coates Hall...", "OK");
+                    break;
+                case "Library":
+                    DisplayAlert("Library", "Details about Middleton Library...", "OK");
+                    break;            }
         }
+        
     }
 
 }
