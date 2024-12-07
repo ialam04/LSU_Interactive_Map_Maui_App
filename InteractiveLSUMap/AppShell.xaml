@@ -33,5 +33,10 @@
             <ShellContent ContentTemplate="{DataTemplate local:EventsPage}" />
         </Tab>
     </TabBar>
+    
+    <ShellContent 
+        x:Name="ProfilePage"
+        Route="profile"
+        ContentTemplate="{DataTemplate local:ProfilePage}" />
 
 </Shell>

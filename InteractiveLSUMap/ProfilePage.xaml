@@ -1,12 +1,78 @@
-<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="InteractiveLSUMap.ProfilePage"
-             Title="ProfilePage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             Title="ProfilePage"
+             BackgroundColor="#f2c14e"
+             Shell.NavBarIsVisible="false">
+
+    <ScrollView>
+        <StackLayout Padding="20" Spacing="20">
+            <!-- Header Section -->
+            <Grid ColumnDefinitions="50, *, 50" Padding="0,0,0,10">
+                <!-- Back Button -->
+                <Button Text="←"
+                        BackgroundColor="Transparent"
+                        TextColor="Black"
+                        FontSize="24"
+                        Clicked="OnBackButtonClicked" />
+
+                <!-- Title -->
+                <Label Text="Profile"
+                       Grid.Column="1"
+                       FontFamily="Aleo"
+                       FontSize="24"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center" />
+            </Grid>
+
+            <!-- Profile Picture -->
+            <Frame HeightRequest="200" WidthRequest="200" CornerRadius="75"
+                   BackgroundColor="White" HorizontalOptions="Center">
+                <Image Source="{Binding ProfilePicturePath}" Aspect="AspectFill"/>
+            </Frame>   
+            <!-- Settings Icon -->
+            <ImageButton Source="edit.png"
+                         HeightRequest="30"
+                         WidthRequest="30"
+                         BackgroundColor="Transparent"
+                         Command="{Binding EditProfilePictureCommand}" />
+            
+            <!-- Name and Degree -->
+            <Label Text="{Binding FullName}" FontAttributes="Bold" FontSize="Large" FontFamily="Aleo" HorizontalOptions="Center" />
+            <Label Text="{Binding Degree}" FontAttributes="Italic" FontSize="Medium" FontFamily="Aleo" HorizontalOptions="Center" />
+
+            <Label Text="Clubs" FontAttributes="Bold" FontSize="Medium" FontFamily="Aleo" />
+            <FlexLayout Wrap="Wrap" JustifyContent="Start" AlignItems="Center" Margin="10"
+                        BindableLayout.ItemsSource="{Binding Clubs}">
+                <!-- Template for Club Items -->
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate>
+                        <Frame CornerRadius="20" BackgroundColor="#6a4c93" Padding="10" Margin="5" HorizontalOptions="Start">
+                            <Label Text="{Binding}" FontFamily="Aleo" TextColor="White" HorizontalTextAlignment="Center" />
+                        </Frame>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </FlexLayout>
+            <!-- Add Button -->
+            <Button Text="+" FontAttributes="Bold" FontSize="Medium" BackgroundColor="#6a4c93" TextColor="White"
+                    CornerRadius="20" Margin="5" WidthRequest="50" HeightRequest="50" Command="{Binding AddClubCommand}" />
+
+            <Label Text="Event Interests" FontAttributes="Bold" FontSize="Medium" FontFamily="Aleo" Margin="0,10,0,0"/>
+            <FlexLayout Wrap="Wrap" JustifyContent="Start" AlignItems="Center" Margin="10"
+                        BindableLayout.ItemsSource="{Binding Interests}">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate>
+                        <Frame CornerRadius="20" BackgroundColor="#6a4c93" Padding="10" Margin="5" HorizontalOptions="Start">
+                            <Label Text="{Binding}" FontFamily="Aleo" TextColor="White" HorizontalTextAlignment="Center" />
+                        </Frame>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </FlexLayout>
+            <!-- Add Interest Button -->
+            <Button Text="+" FontAttributes="Bold" FontSize="Medium" BackgroundColor="#6a4c93" TextColor="White"
+                    CornerRadius="20" Margin="5" WidthRequest="50" HeightRequest="50" Command="{Binding AddInterestCommand}" />
+
+        </StackLayout>
+    </ScrollView>
 </ContentPage>

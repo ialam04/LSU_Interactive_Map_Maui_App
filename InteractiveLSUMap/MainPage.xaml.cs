@@ -55,6 +55,20 @@
                     break;            }
         }
         
+        private async void OnProfileButtonClicked(object sender, EventArgs e)
+        {
+            try
+            {
+                // Use absolute route for navigation
+                await Shell.Current.GoToAsync("///profile");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Navigation failed: {ex.Message}");
+                await DisplayAlert("Error", "Failed to navigate to the Profile Page.", "OK");
+            }
+        }
+        
     }
 
 }
