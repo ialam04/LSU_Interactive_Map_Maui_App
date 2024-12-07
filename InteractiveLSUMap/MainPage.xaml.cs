@@ -1,60 +1,42 @@
-﻿namespace InteractiveLSUMap
+﻿using System.Text.Json;
+
+namespace InteractiveLSUMap
 {
     public partial class MainPage : ContentPage
     {
-
         public MainPage()
         {
             InitializeComponent();
-            
-            // Add Pinch Gesture Recognizer
-            var pinchGesture = new PinchGestureRecognizer();
-            pinchGesture.PinchUpdated += OnPinchUpdated;
-            scrollView.GestureRecognizers.Add(pinchGesture);
+            InitializeMap();
         }
-        
-        private const double MinScale = 1;
-        private const double MaxScale = 4;
-        private double currentScale = 1;
-        private double startScale = 1;
 
-        private void OnPinchUpdated(object sender, PinchGestureUpdatedEventArgs e)
+        private async void InitializeMap()
         {
-            if (e.Status == GestureStatus.Started)
+            try
             {
-                // Store the current scale factor at the start of the pinch
-                startScale = scrollView.Scale;
+                var html = await FileSystem.OpenAppPackageFileAsync("wwwroot/index.html");
+                using var reader = new StreamReader(html);
+                mapView.Source = new HtmlWebViewSource
+                {
+                    Html = await reader.ReadToEndAsync()
+                };
             }
-            else if (e.Status == GestureStatus.Running)
+            catch (Exception ex)
             {
-                // Calculate the scale factor
-                currentScale = Math.Clamp(startScale * e.Scale, MinScale, MaxScale);
-                scrollView.Scale = currentScale;
+                await DisplayAlert("Error", $"Failed to load map: {ex.Message}", "OK");
             }
         }
 
-        private void OnPinClicked(object sender, EventArgs e)
+        // Handle messages from JavaScript
+        private async void OnJavaScriptMessage(string message)
         {
-            var button = sender as ImageButton;
-            var pinId = button?.CommandParameter as string;
-            
-            // Show building information for the clicked pin
-            switch (pinId)
+            var data = JsonSerializer.Deserialize<Dictionary<string, string>>(message);
+            if (data["action"] == "markerClicked")
             {
-                case "Nicholson":
-                    DisplayAlert("Nicholson Hall", "Details about Nicholson Hall...", "OK");
-                    break;
-                case "Prescott":
-                    DisplayAlert("Prescott Hall", "Details about Prescott Hall...", "OK");
-                    break;
-                case "Coates":
-                    DisplayAlert("Coates Hall", "Details about Coates Hall...", "OK");
-                    break;
-                case "Library":
-                    DisplayAlert("Library", "Details about Middleton Library...", "OK");
-                    break;            }
+                await DisplayAlert(data["data"], "Building details here...", "OK");
+            }
         }
-        
+
         private async void OnProfileButtonClicked(object sender, EventArgs e)
         {
             try
@@ -68,7 +50,6 @@
                 await DisplayAlert("Error", "Failed to navigate to the Profile Page.", "OK");
             }
         }
-        
     }
 
 }

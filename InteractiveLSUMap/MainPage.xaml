@@ -1,51 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:InteractiveLSUMap"
              x:Class="InteractiveLSUMap.MainPage">
     <Grid>
-        <ScrollView x:Name="scrollView" 
-                    HorizontalScrollBarVisibility="Never"
-                    VerticalScrollBarVisibility="Never">
-            
-            <!-- AbsoluteLayout to Position Map and Pins -->
-            <AbsoluteLayout>
-                <!-- Background Map Image -->
-                <Image Source="map_sketch.png"
-                       Aspect="AspectFill"
-                       AbsoluteLayout.LayoutFlags="All"
-                       AbsoluteLayout.LayoutBounds="0, 0, 1, 1" />
-
-                <!-- Clickable Pin Prescott -->
-                <ImageButton Source="question_mark_24.png"
-                             AbsoluteLayout.LayoutFlags="PositionProportional"
-                             AbsoluteLayout.LayoutBounds="0.1, 0.545, 20, 20"
-                             Clicked="OnPinClicked" 
-                             CommandParameter="Prescott" />
-
-                <!-- Clickable Pin Nicholson -->
-                <ImageButton Source="question_mark_24.png"
-                             AbsoluteLayout.LayoutFlags="PositionProportional"
-                             AbsoluteLayout.LayoutBounds="0.7, 0.665, 20, 20"
-                             Clicked="OnPinClicked" 
-                             CommandParameter="Nicholson" />
-                
-                <!-- Clickable Pin Coates -->
-                <ImageButton Source="question_mark_24.png"
-                             AbsoluteLayout.LayoutFlags="PositionProportional"
-                             AbsoluteLayout.LayoutBounds="0.6, 0.55, 20, 20"
-                             Clicked="OnPinClicked" 
-                             CommandParameter="Coates" />
-                
-                <!-- Clickable Pin Library -->
-                <ImageButton Source="question_mark_24.png"
-                             AbsoluteLayout.LayoutFlags="PositionProportional"
-                             AbsoluteLayout.LayoutBounds="0.325, 0.31, 20, 20"
-                             Clicked="OnPinClicked" 
-                             CommandParameter="Library" />
-
-                <!-- Add more pins as needed -->
-            </AbsoluteLayout>
-        </ScrollView>
+        <local:HybridWebView x:Name="mapView"
+                            HorizontalOptions="Fill"
+                            VerticalOptions="Fill" />
         
         <ImageButton Source="profile_photo.png"
                      HeightRequest="50"
@@ -59,5 +20,4 @@
                      BorderWidth="1"
                      Clicked="OnProfileButtonClicked" />
     </Grid>
-    
 </ContentPage>

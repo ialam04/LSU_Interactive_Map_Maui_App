@@ -1,0 +1,85 @@
+<!-- wwwroot/index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no'>
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css' rel='stylesheet'>
+    <style>
+        body { margin: 0; padding: 0; }
+        #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+    </style>
+</head>
+<body>
+<div id='map'></div>
+<script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoiamFja3NvbmRlc2NhbnQiLCJhIjoiY200YzV4a2s4MDc0czJscG5mNTBncHR1NyJ9.vxQqgLabWXrlH16v7Evcpw';
+
+    const bounds = [
+        [-91.1817342, 30.4120415],
+        [-91.1770119, 30.4146566]
+    ];
+
+    const map = new mapboxgl.Map({
+        container: 'map',
+        maxBounds: bounds,
+        zoom: 12,
+        center: [-91.18267, 30.41600],
+        style: 'mapbox://styles/mapbox/dark-v11'
+    });
+
+    map.on('load', () => {
+        // Add LSU map overlay
+        map.addSource('lsu-map', {
+            'type': 'image',
+            'url': 'https://carts.lsu.edu/admin/uploads/map_better_colors_1_1116943474.png',
+            'coordinates': [
+                [-91.18267625797104, 30.416002186821842],
+                [-91.1761111830366, 30.416002186821842],
+                [-91.1761111830366, 30.41074748221844],
+                [-91.18267625797104, 30.41074748221844]
+            ]
+        });
+
+        map.addLayer({
+            'id': 'lsu-overlay',
+            'type': 'raster',
+            'source': 'lsu-map',
+            'paint': {
+                'raster-fade-duration': 0,
+                'raster-opacity': 0.85
+            }
+        });
+
+        // Add markers for buildings
+        const buildings = {
+            'Prescott': [-91.181397, 30.407675],
+            'Nicholson': [-91.179145, 30.408811],
+            'Coates': [-91.178901, 30.412744],
+            'Library': [-91.180699, 30.412001]
+        };
+
+        for (const [name, coords] of Object.entries(buildings)) {
+            const marker = new mapboxgl.Marker()
+                .setLngLat(coords)
+                .setPopup(new mapboxgl.Popup().setHTML(name))
+                .addTo(map);
+            
+            marker.getElement().addEventListener('click', () => {
+                invokeCSSharpAction('markerClicked', name);
+            });
+        }
+    });
+
+    // Bridge to C#
+    function invokeCSSharpAction(action, data) {
+        if (window.webkit && window.webkit.messageHandlers) {
+            window.webkit.messageHandlers.invokeAction.postMessage(
+                JSON.stringify({ action, data })
+            );
+        }
+    }
+</script>
+</body>
+</html>
