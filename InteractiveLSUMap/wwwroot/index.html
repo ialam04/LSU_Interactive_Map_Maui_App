@@ -14,7 +14,61 @@
 <body>
 <div id='map'></div>
 <script>
-    mapboxgl.accessToken = 'pk.eyJ1IjoiamFja3NvbmRlc2NhbnQiLCJhIjoiY200YzV4a2s4MDc0czJscG5mNTBncHR1NyJ9.vxQqgLabWXrlH16v7Evcpw';
+    mapboxgl.accessToken = 'pk.eyJ1IjoiamFja3NvbmRlc2NhbnQiLCJhIjoiY200ZXlqc2xhMTBldzJrcHNocWxydW1hNCJ9.iq0og4lKwg3YrgcdgFhtxA';
+
+    const pinCategories = {
+        locations: {
+            'Prescott': [-91.1808370061389, 30.41350846773524],
+            'Nicholson': [-91.17865131560713, 30.41253870863463],
+            'Coates': [-91.17906528057395, 30.413187536318254],
+            'Library': [-91.18020361641825, 30.414403792577836]
+        },
+        events: {
+            'Football Game': [-91.18379831314087, 30.41205492622368],
+            'Career Fair': [-91.17906528057395, 30.413187536318254],
+            'Concert': [-91.17865131560713, 30.41253870863463]
+        },
+        memories: {
+            'First Class': [-91.1808370061389, 30.41350846773524],
+            'Met Friends': [-91.18020361641825, 30.414403792577836],
+            'Study Session': [-91.17906528057395, 30.413187536318254]
+        },
+        visited: {
+            'Union': [-91.17766427993774, 30.413768593037344],
+            'UREC': [-91.17572235107422, 30.409925012439716],
+            'Bookstore': [-91.17766427993774, 30.413768593037344]
+        },
+        clubs: {
+            'ACM Club': [-91.1808370061389, 30.41350846773524],
+            'Chess Club': [-91.17906528057395, 30.413187536318254],
+            'Sports Club': [-91.17572235107422, 30.409925012439716]
+        }
+    };
+
+    let activeMarkers = [];
+
+    function clearMarkers() {
+        activeMarkers.forEach(marker => marker.remove());
+        activeMarkers = [];
+    }
+
+    function showPins(category) {
+        clearMarkers();
+        const pins = pinCategories[category];
+        
+        for (const [name, coords] of Object.entries(pins)) {
+            const marker = new mapboxgl.Marker()
+                .setLngLat(coords)
+                .setPopup(new mapboxgl.Popup().setHTML(name))
+                .addTo(map);
+            
+            marker.getElement().addEventListener('click', () => {
+                invokeCSSharpAction('markerClicked', `${category}:${name}`);
+            });
+            
+            activeMarkers.push(marker);
+        }
+    }
 
     const bounds = [
         [-91.1817342, 30.4120415],
@@ -48,28 +102,12 @@
             'source': 'lsu-map',
             'paint': {
                 'raster-fade-duration': 0,
-                'raster-opacity': 0.85
+                'raster-opacity': 1
             }
         });
 
-        // Add markers for buildings
-        const buildings = {
-            'Prescott': [-91.181397, 30.407675],
-            'Nicholson': [-91.179145, 30.408811],
-            'Coates': [-91.178901, 30.412744],
-            'Library': [-91.180699, 30.412001]
-        };
-
-        for (const [name, coords] of Object.entries(buildings)) {
-            const marker = new mapboxgl.Marker()
-                .setLngLat(coords)
-                .setPopup(new mapboxgl.Popup().setHTML(name))
-                .addTo(map);
-            
-            marker.getElement().addEventListener('click', () => {
-                invokeCSSharpAction('markerClicked', name);
-            });
-        }
+        // Show default locations
+        showPins('locations');
     });
 
     // Bridge to C#
