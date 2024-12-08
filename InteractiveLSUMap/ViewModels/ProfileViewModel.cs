@@ -9,8 +9,10 @@ namespace InteractiveLSUMap.ViewModels
         public string FullName { get; set; }
         public string Degree { get; set; }
         public ObservableCollection<string> Clubs { get; }
-        public ObservableCollection<string> Interests { get; }
-        
+        public ObservableCollection<string> Classes { get; }
+        public ObservableCollection<string> AvailableClubs { get; }
+        public ObservableCollection<string> AvailableClasses { get; }
+
         private string _profilePicturePath = "profile_photo.png"; // Default profile picture
         public string ProfilePicturePath
         {
@@ -18,59 +20,102 @@ namespace InteractiveLSUMap.ViewModels
             set => SetProperty(ref _profilePicturePath, value);
         }
 
-        public ICommand AddClubCommand { get; }
-        public ICommand AddInterestCommand { get; }
-        public ICommand SaveCommand { get; }
-        public ICommand CancelCommand { get; }
-        
-        public ICommand EditProfilePictureCommand { get; }
-
-        public ProfileViewModel()
+        private string _selectedClub;
+        public string SelectedClub
         {
-            // Example initial data
-            FullName = "Ibrahim Alam";
-            Degree = "Computer Science - SWE, BS";
-
-            Clubs = new ObservableCollection<string> { "WebDev", "SWE", "SASE" };
-            Interests = new ObservableCollection<string> { "Sports", "Music" };
-
-            AddClubCommand = new Command(OnAddClub);
-            AddInterestCommand = new Command(OnAddInterest);
-            SaveCommand = new Command(OnSave);
-            CancelCommand = new Command(OnCancel);
-            EditProfilePictureCommand = new Command(OnEditProfilePicture);
-        }
-
-        private async void OnAddClub()
-        {
-            string newClub = await Application.Current.MainPage.DisplayPromptAsync("Add Club", "Enter the name of the new club:");
-            if (!string.IsNullOrWhiteSpace(newClub))
+            get => _selectedClub;
+            set
             {
-                Clubs.Add(newClub);
+                if (SetProperty(ref _selectedClub, value))
+                    OnPropertyChanged(nameof(IsAddClubEnabled)); // Notify UI
             }
         }
 
-        private async void OnAddInterest()
+        private string _selectedClass;
+        public string SelectedClass
         {
-            string newInterest = await Application.Current.MainPage.DisplayPromptAsync("Add Interest", "Enter the name of the new interest:");
-            if (!string.IsNullOrWhiteSpace(newInterest))
+            get => _selectedClass;
+            set
             {
-                Interests.Add(newInterest);
+                if (SetProperty(ref _selectedClass, value))
+                    OnPropertyChanged(nameof(IsAddClassEnabled)); // Notify UI
+            }
+        }
+
+        public bool IsAddClubEnabled => !string.IsNullOrWhiteSpace(SelectedClub);
+        public bool IsAddClassEnabled => !string.IsNullOrWhiteSpace(SelectedClass);
+
+        public ICommand ConfirmAddClubCommand { get; }
+        public ICommand ConfirmAddClassCommand { get; }
+        public ICommand EditProfilePictureCommand { get; }
+        public ICommand SaveCommand { get; }
+        public ICommand CancelCommand { get; }
+
+        public ProfileViewModel()
+        {
+            FullName = "Ibrahim Alam";
+            Degree = "Computer Science - SWE, BS";
+
+            Clubs = new ObservableCollection<string> 
+            {
+                "Digital Art & Design Association (DADA)",
+                "Ceramics Arts Student Association (CASA)"
+            };
+            Classes = new ObservableCollection<string>
+            {
+                "MATH 4066", "MATH 4153", "MATH 2090", "ENGL 2000"
+            };
+            
+            AvailableClubs = new ObservableCollection<string>
+            {
+                "Digital Art & Design Association (DADA)",
+                "Ceramics Arts Student Association (CASA)",
+                "Kayaking Club",
+                "Chess Club"
+            };
+
+            AvailableClasses = new ObservableCollection<string>
+            {
+                "MATH 4058", "MATH 4066", "MATH 4153", "MATH 2060", "MATH 2065", 
+                "MATH 2090", "MATH 1550", "MATH 2070", "ENGL 2000"
+            };
+
+
+            ConfirmAddClubCommand = new Command(OnConfirmAddClub);
+            ConfirmAddClassCommand = new Command(OnConfirmAddClass);
+            EditProfilePictureCommand = new Command(OnEditProfilePicture);
+            SaveCommand = new Command(OnSave);
+            CancelCommand = new Command(OnCancel);
+        }
+
+        private void OnConfirmAddClub()
+        {
+            if (!string.IsNullOrWhiteSpace(SelectedClub) && !Clubs.Contains(SelectedClub))
+            {
+                Clubs.Add(SelectedClub);
+                SelectedClub = null; // Reset selection
+            }
+        }
+
+        private void OnConfirmAddClass()
+        {
+            if (!string.IsNullOrWhiteSpace(SelectedClass) && !Classes.Contains(SelectedClass))
+            {
+                Classes.Add(SelectedClass);
+                SelectedClass = null; // Reset selection
             }
         }
 
         private async void OnSave()
         {
-            // Logic to save profile data (e.g., to a database or file)
-            await Application.Current.MainPage.DisplayAlert("Success", "Your profile has been updated!", "OK");
-            await Application.Current.MainPage.Navigation.PopAsync();
+            await Application.Current.MainPage.DisplayAlert("Success", "Profile updated!", "OK");
         }
 
         private async void OnCancel()
         {
             await Application.Current.MainPage.Navigation.PopAsync();
         }
-        
+
         private async void OnEditProfilePicture()
         {
             try

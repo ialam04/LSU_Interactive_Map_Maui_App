@@ -1,22 +1,24 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:InteractiveLSUMap.ViewModels"
              x:Class="InteractiveLSUMap.ProfilePage"
              Title="ProfilePage"
              BackgroundColor="#f2c14e"
              Shell.NavBarIsVisible="false">
 
+    <ContentPage.BindingContext>
+        <viewModels:ProfileViewModel />
+    </ContentPage.BindingContext>
+
     <ScrollView>
         <StackLayout Padding="20" Spacing="20">
             <!-- Header Section -->
             <Grid ColumnDefinitions="50, *, 50" Padding="0,0,0,10">
-                <!-- Back Button -->
                 <Button Text="←"
                         BackgroundColor="Transparent"
                         TextColor="Black"
                         FontSize="24"
                         Clicked="OnBackButtonClicked" />
-
-                <!-- Title -->
                 <Label Text="Profile"
                        Grid.Column="1"
                        FontFamily="Aleo"
@@ -27,52 +29,69 @@
             </Grid>
 
             <!-- Profile Picture -->
-            <Frame HeightRequest="200" WidthRequest="200" CornerRadius="75"
+            <Frame HeightRequest="200" WidthRequest="200" CornerRadius="100"
                    BackgroundColor="White" HorizontalOptions="Center">
-                <Image Source="{Binding ProfilePicturePath}" Aspect="AspectFill"/>
-            </Frame>   
-            <!-- Settings Icon -->
-            <ImageButton Source="edit.png"
-                         HeightRequest="30"
-                         WidthRequest="30"
-                         BackgroundColor="Transparent"
-                         Command="{Binding EditProfilePictureCommand}" />
-            
+                <Image Source="{Binding ProfilePicturePath}" Aspect="AspectFill" />
+            </Frame>
+
             <!-- Name and Degree -->
             <Label Text="{Binding FullName}" FontAttributes="Bold" FontSize="Large" FontFamily="Aleo" HorizontalOptions="Center" />
             <Label Text="{Binding Degree}" FontAttributes="Italic" FontSize="Medium" FontFamily="Aleo" HorizontalOptions="Center" />
 
+            <!-- Clubs Section -->
             <Label Text="Clubs" FontAttributes="Bold" FontSize="Medium" FontFamily="Aleo" />
             <FlexLayout Wrap="Wrap" JustifyContent="Start" AlignItems="Center" Margin="10"
                         BindableLayout.ItemsSource="{Binding Clubs}">
-                <!-- Template for Club Items -->
                 <BindableLayout.ItemTemplate>
                     <DataTemplate>
-                        <Frame CornerRadius="20" BackgroundColor="#6a4c93" Padding="10" Margin="5" HorizontalOptions="Start">
-                            <Label Text="{Binding}" FontFamily="Aleo" TextColor="White" HorizontalTextAlignment="Center" />
+                        <Frame CornerRadius="20" BackgroundColor="#6a4c93" Padding="10" Margin="5">
+                            <Label Text="{Binding}" FontFamily="Aleo" TextColor="White" />
                         </Frame>
                     </DataTemplate>
                 </BindableLayout.ItemTemplate>
             </FlexLayout>
-            <!-- Add Button -->
-            <Button Text="+" FontAttributes="Bold" FontSize="Medium" BackgroundColor="#6a4c93" TextColor="White"
-                    CornerRadius="20" Margin="5" WidthRequest="50" HeightRequest="50" Command="{Binding AddClubCommand}" />
 
-            <Label Text="Event Interests" FontAttributes="Bold" FontSize="Medium" FontFamily="Aleo" Margin="0,10,0,0"/>
+            <!-- Add Club Dropdown -->
+            <Picker Title="Select Club..." ItemsSource="{Binding AvailableClubs}" SelectedItem="{Binding SelectedClub}" 
+                    BackgroundColor="#6a4c93" TextColor="White" FontFamily="Aleo" FontAttributes="Bold" />
+            <!-- Add Club Circular Button -->
+            <Button Text="+" 
+                    Command="{Binding ConfirmAddClubCommand}" 
+                    IsEnabled="{Binding SelectedClub}" 
+                    WidthRequest="40" 
+                    HeightRequest="40" 
+                    CornerRadius="20" 
+                    FontSize="Medium"
+                    BackgroundColor="#6a4c93" 
+                    TextColor="White"
+                    HorizontalOptions="Center" />
+            
+            <!-- Classes Section -->
+            <Label Text="Classes" FontAttributes="Bold" FontSize="Medium" FontFamily="Aleo" />
             <FlexLayout Wrap="Wrap" JustifyContent="Start" AlignItems="Center" Margin="10"
-                        BindableLayout.ItemsSource="{Binding Interests}">
+                        BindableLayout.ItemsSource="{Binding Classes}">
                 <BindableLayout.ItemTemplate>
                     <DataTemplate>
-                        <Frame CornerRadius="20" BackgroundColor="#6a4c93" Padding="10" Margin="5" HorizontalOptions="Start">
-                            <Label Text="{Binding}" FontFamily="Aleo" TextColor="White" HorizontalTextAlignment="Center" />
+                        <Frame CornerRadius="20" BackgroundColor="#6a4c93" Padding="10" Margin="5">
+                            <Label Text="{Binding}" FontFamily="Aleo" TextColor="White" />
                         </Frame>
                     </DataTemplate>
                 </BindableLayout.ItemTemplate>
             </FlexLayout>
-            <!-- Add Interest Button -->
-            <Button Text="+" FontAttributes="Bold" FontSize="Medium" BackgroundColor="#6a4c93" TextColor="White"
-                    CornerRadius="20" Margin="5" WidthRequest="50" HeightRequest="50" Command="{Binding AddInterestCommand}" />
 
+            <!-- Add Class Dropdown -->
+            <Picker Title="Select Class..." ItemsSource="{Binding AvailableClasses}" SelectedItem="{Binding SelectedClass}"
+                    BackgroundColor="#6a4c93" TextColor="White" FontFamily="Aleo" FontAttributes="Bold" />
+            <Button Text="+" 
+                    Command="{Binding ConfirmAddClassCommand}" 
+                    IsEnabled="{Binding SelectedClass}" 
+                    WidthRequest="40" 
+                    HeightRequest="40" 
+                    CornerRadius="20" 
+                    FontSize="Medium"
+                    BackgroundColor="#6a4c93" 
+                    TextColor="White"
+                    HorizontalOptions="Center" />
         </StackLayout>
     </ScrollView>
 </ContentPage>

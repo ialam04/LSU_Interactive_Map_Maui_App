@@ -1,12 +1,159 @@
-<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:InteractiveLSUMap.ViewModels"
              x:Class="InteractiveLSUMap.EventsPage"
-             Title="EventsPage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             Title="LSU Events"
+             BackgroundColor="#f2c14e"
+             Shell.NavBarIsVisible="false">
+
+    <ContentPage.BindingContext>
+        <viewModels:EventsPageViewModel />
+    </ContentPage.BindingContext>
+
+    <Grid>
+        <!-- Main Content -->
+        <ScrollView Grid.Row="0">
+            <StackLayout Padding="20" Spacing="20">
+                <!-- Greeting and Profile -->
+                <Grid ColumnDefinitions="100, *, 50" VerticalOptions="Center" Margin="10">
+                    <Frame HeightRequest="100" WidthRequest="100" CornerRadius="50" BackgroundColor="Transparent"
+                           VerticalOptions="Center" HorizontalOptions="Center">
+                        <Image Source="{Binding ProfilePicturePath}" Aspect="AspectFill" />
+                    </Frame>
+                    <Label Text="{Binding Greeting}" 
+                           Grid.Column="1" 
+                           FontFamily="Aleo" 
+                           FontSize="24" 
+                           FontAttributes="Bold" 
+                           HorizontalOptions="Center" 
+                           VerticalOptions="Center" />
+                </Grid>
+
+                <!-- LSU Events Today Section -->
+                <Label Text="LSU EVENTS TODAY:" 
+                       FontFamily="Aleo" 
+                       FontAttributes="Bold" 
+                       FontSize="Medium" />
+                <CollectionView ItemsSource="{Binding FilteredEventsToday}" SelectionMode="Single" SelectedItem="{Binding SelectedEvent}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame BackgroundColor="White" Padding="10" Margin="5">
+                                <StackLayout Orientation="Horizontal">
+                                    <ImageButton Source="{Binding Image}" HeightRequest="50" WidthRequest="50" Aspect="AspectFill"
+                                                 CommandParameter="{Binding .}"
+                                                 Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:EventsPageViewModel}}, Path=EventClickedCommand}" />
+                                    <StackLayout>
+                                        <Label Text="{Binding Title}" FontAttributes="Bold" FontSize="Medium" />
+                                        <Label Text="{Binding Organization}" FontSize="Small" />
+                                        <Label Text="{Binding Location}" FontSize="Small" />
+                                    </StackLayout>
+                                </StackLayout>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <!-- View More Button -->
+                <Button Text="{Binding ViewMoreButtonText}" 
+                        FontFamily="Aleo" 
+                        BackgroundColor="#6a4c93" 
+                        TextColor="White" 
+                        CornerRadius="20" 
+                        HeightRequest="50" 
+                        Command="{Binding ViewMoreCommand}" />
+
+                <!-- Club Events Section -->
+                <Label Text="CLUB EVENTS:" 
+                       FontFamily="Aleo" 
+                       FontAttributes="Bold" 
+                       FontSize="Medium" />
+                <CollectionView ItemsSource="{Binding FilteredClubEvents}" SelectionMode="Single" SelectedItem="{Binding SelectedClubEvent}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame BackgroundColor="White" Padding="10" Margin="5">
+                                <StackLayout Orientation="Horizontal">
+                                    <ImageButton Source="{Binding Image}" HeightRequest="50" WidthRequest="50" Aspect="AspectFill"
+                                                 CommandParameter="{Binding .}"
+                                                 Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:EventsPageViewModel}}, Path=EventClickedCommand}" />
+                                    <StackLayout>
+                                        <Label Text="{Binding Title}" FontAttributes="Bold" FontSize="Medium" />
+                                        <Label Text="{Binding Organization}" FontSize="Small" />
+                                        <Label Text="{Binding Location}" FontSize="Small" />
+                                    </StackLayout>
+                                </StackLayout>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+                
+                <!-- View More Button -->
+                <Button Text="{Binding ViewMoreClubButtonText}" 
+                        FontFamily="Aleo" 
+                        BackgroundColor="#6a4c93" 
+                        TextColor="White" 
+                        CornerRadius="20" 
+                        HeightRequest="50" 
+                        Command="{Binding ViewMoreClubCommand}" />
+
+            </StackLayout>
+        </ScrollView>
+
+        <!-- Overlay for Event Details -->
+        <Grid IsVisible="{Binding IsEventDetailsVisible}" BackgroundColor="#80000000">
+            <!-- Transparent Layer for Click Out -->
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding CloseEventDetailsCommand}" />
+            </Grid.GestureRecognizers>
+
+            <Frame BackgroundColor="#6a4c93"
+                   Padding="10"
+                   Margin="20"
+                   CornerRadius="15"
+                   VerticalOptions="Center"
+                   HorizontalOptions="Center"
+                   WidthRequest="300"
+                   HeightRequest="400">
+                <Grid>
+                    <!-- Close Button -->
+                    <ImageButton Source="close_icon.png"
+                                 HorizontalOptions="End"
+                                 VerticalOptions="Start"
+                                 Command="{Binding CloseEventDetailsCommand}" />
+                    
+                    <!-- Banner Image -->
+                    <Image Source="{Binding SelectedEvent.Image}" HeightRequest="150" Aspect="AspectFill" />
+
+                    <!-- Event Details -->
+                    <StackLayout Padding="10" BackgroundColor="White" VerticalOptions="FillAndExpand">
+                        <Label Text="{Binding SelectedEvent.Title}"
+                               FontSize="Large"
+                               FontAttributes="Bold"
+                               TextColor="Black"
+                               Margin="0,10,0,10" />
+                        <Label Text="{Binding SelectedEvent.Description}" TextColor="Black" />
+
+                        <StackLayout Orientation="Horizontal" Margin="0,10,0,10">
+                            <Image Source="location_icon.png" HeightRequest="24" WidthRequest="24" />
+                            <Label Text="{Binding SelectedEvent.Location}" TextColor="Black" />
+                        </StackLayout>
+                        <StackLayout Orientation="Horizontal">
+                            <Image Source="calendar_icon.png" HeightRequest="24" WidthRequest="24" />
+                            <Label Text="{Binding SelectedEvent.Date}" TextColor="Black" />
+                        </StackLayout>
+                        <StackLayout Orientation="Horizontal">
+                            <Image Source="time_icon.png" HeightRequest="24" WidthRequest="24" />
+                            <Label Text="{Binding SelectedEvent.Time}" TextColor="Black" />
+                        </StackLayout>
+
+                        <Button Text="Click to View Building on Map"
+                                BackgroundColor="Yellow"
+                                FontAttributes="Bold"
+                                TextColor="#6a4c93"
+                                CornerRadius="15"
+                                Command="{Binding OpenMapCommand}" />
+                    </StackLayout>
+                </Grid>
+            </Frame>
+        </Grid>
+    </Grid>
 </ContentPage>
