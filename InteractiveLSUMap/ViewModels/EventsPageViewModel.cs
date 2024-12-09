@@ -113,10 +113,10 @@ namespace InteractiveLSUMap.ViewModels
                 {
                     Title = "Nifty Fifties Nutcracker Auditions",
                     Organization = "Theater Club",
-                    Location = "Hopkins Black Box Theatre (Coates Hall)",
+                    Location = "Coates Hall",
                     Time = "5:00 PM",
                     Image = "nutcracker_auditions.png",
-                    Description = "Audition for the Nutcracker in a fifties twist.",
+                    Description = "Audition for the Nutcracker in a fifties twist at Hopkins Black Box Theater.",
                     Date = "12/10/2024"
                 }
             };
@@ -138,7 +138,7 @@ namespace InteractiveLSUMap.ViewModels
                 {
                     Title = "Ceramic Workshop",
                     Organization = "CASA",
-                    Location = "Barnes Ogden Art & Design Building",
+                    Location = "Art & Design Building",
                     Time = "2:00 PM",
                     Image = "ceramic_workshop.png",
                     Description = "Hands-on ceramic making workshop.",
@@ -158,7 +158,7 @@ namespace InteractiveLSUMap.ViewModels
                 {
                     Title = "Chess Tournament",
                     Organization = "Chess Club",
-                    Location = "Arthur T. Prescott Hall",
+                    Location = "Prescott Hall",
                     Time = "3:00 PM",
                     Image = "chess_tournament.png",
                     Description = "Compete in a friendly chess tournament.",

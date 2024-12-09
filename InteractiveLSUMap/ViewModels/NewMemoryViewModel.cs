@@ -24,41 +24,17 @@ namespace InteractiveLSUMap.ViewModels
         {
             Locations = new ObservableCollection<string>
             {
-                "Greek Theatre",
-                "LSU Campus Mounds",
-                "Peabody Hall",
-                "Foster Hall",
-                "Thomas Boyd Hall",
-                "Hill Memorial Library",
-                "Memorial Tower",
-                "LSU Library",
-                "Himes Hall",
-                "David Boyd Hall",
-                "Free Speech Plaza",
-                "The Quad",
-                "Allen Hall",
                 "Prescott Hall",
-                "Stubbs Hall",
-                "Dodson Auditorium",
-                "Audubon Hall",
-                "Woodin Hall",
                 "Coates Hall",
-                "Union Theater",
+                "LSU Library",
+                "Howe-Russell Geoscience Complex",
                 "Student Union",
                 "Lockett Hall",
-                "Journalism Building",
-                "Hodges Hall",
-                "Johnston Hall",
-                "Hatcher Hall",
-                "Julian T. White Hall",
-                "Art Building",
-                "Atkinson Hall",
-                "Engineering Quad",
-                "Human Ecology Building",
-                "Studio Arts Building",
-                "Howe-Russell Geoscience Complex",
-                "Life Sciences Building"
+                "Art & Design Building",
+                "Free Speech Plaza",
+                "Parade Ground"
             };
+
 
             CompleteCommand = new Command(() => { });
             CancelCommand = new Command(() => { });
