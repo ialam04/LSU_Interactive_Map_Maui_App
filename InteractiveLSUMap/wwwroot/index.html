@@ -1,123 +1,146 @@
 <!-- wwwroot/index.html -->
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset='utf-8'>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no'>
     <script src='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js'></script>
     <link href='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css' rel='stylesheet'>
     <style>
-        body { margin: 0; padding: 0; }
-        #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
     </style>
 </head>
+
 <body>
-<div id='map'></div>
-<script>
-    mapboxgl.accessToken = 'pk.eyJ1IjoiamFja3NvbmRlc2NhbnQiLCJhIjoiY200ZXlqc2xhMTBldzJrcHNocWxydW1hNCJ9.iq0og4lKwg3YrgcdgFhtxA';
+    <div id='map'></div>
+    <script>
+        mapboxgl.accessToken = 'pk.eyJ1IjoiamFja3NvbmRlc2NhbnQiLCJhIjoiY200ZXlqc2xhMTBldzJrcHNocWxydW1hNCJ9.iq0og4lKwg3YrgcdgFhtxA';
 
-    const pinCategories = {
-        locations: {
-            'Prescott': [-91.1808370061389, 30.41350846773524],
-            'Nicholson': [-91.17865131560713, 30.41253870863463],
-            'Coates': [-91.17906528057395, 30.413187536318254],
-            'Library': [-91.18020361641825, 30.414403792577836]
-        },
-        events: {
-            'Football Game': [-91.18379831314087, 30.41205492622368],
-            'Career Fair': [-91.17906528057395, 30.413187536318254],
-            'Concert': [-91.17865131560713, 30.41253870863463]
-        },
-        memories: {
-            'First Class': [-91.1808370061389, 30.41350846773524],
-            'Met Friends': [-91.18020361641825, 30.414403792577836],
-            'Study Session': [-91.17906528057395, 30.413187536318254]
-        },
-        visited: {
-            'Union': [-91.17766427993774, 30.413768593037344],
-            'UREC': [-91.17572235107422, 30.409925012439716],
-            'Bookstore': [-91.17766427993774, 30.413768593037344]
-        },
-        clubs: {
-            'ACM Club': [-91.1808370061389, 30.41350846773524],
-            'Chess Club': [-91.17906528057395, 30.413187536318254],
-            'Sports Club': [-91.17572235107422, 30.409925012439716]
-        }
-    };
-
-    let activeMarkers = [];
-
-    function clearMarkers() {
-        activeMarkers.forEach(marker => marker.remove());
-        activeMarkers = [];
-    }
-
-    function showPins(category) {
-        clearMarkers();
-        const pins = pinCategories[category];
-        
-        for (const [name, coords] of Object.entries(pins)) {
-            const marker = new mapboxgl.Marker()
-                .setLngLat(coords)
-                .setPopup(new mapboxgl.Popup().setHTML(name))
-                .addTo(map);
-            
-            marker.getElement().addEventListener('click', () => {
-                invokeCSSharpAction('markerClicked', `${category}:${name}`);
-            });
-            
-            activeMarkers.push(marker);
-        }
-    }
-
-    const bounds = [
-        [-91.1817342, 30.4120415],
-        [-91.1770119, 30.4146566]
-    ];
-
-    const map = new mapboxgl.Map({
-        container: 'map',
-        maxBounds: bounds,
-        zoom: 12,
-        center: [-91.18267, 30.41600],
-        style: 'mapbox://styles/mapbox/dark-v11'
-    });
-
-    map.on('load', () => {
-        // Add LSU map overlay
-        map.addSource('lsu-map', {
-            'type': 'image',
-            'url': 'https://carts.lsu.edu/admin/uploads/map_better_colors_1_1116943474.png',
-            'coordinates': [
-                [-91.18267625797104, 30.416002186821842],
-                [-91.1761111830366, 30.416002186821842],
-                [-91.1761111830366, 30.41074748221844],
-                [-91.18267625797104, 30.41074748221844]
-            ]
-        });
-
-        map.addLayer({
-            'id': 'lsu-overlay',
-            'type': 'raster',
-            'source': 'lsu-map',
-            'paint': {
-                'raster-fade-duration': 0,
-                'raster-opacity': 1
+        const pinCategories = {
+            locations: {
+                'Prescott': [-91.1808370061389, 30.41350846773524],
+                'Nicholson': [-91.17865131560713, 30.41253870863463],
+                'Coates': [-91.17906528057395, 30.413187536318254],
+                'Library': [-91.18020361641825, 30.414403792577836],
+                'Howe-Russell': [-91.178737957784, 30.41176666593225],
+                'Student Union': [-91.1772527830808, 30.412686148493126],
+                'Lockett': [-91.1818003245514, 30.413306022930918],
+                'Art & Design': [-91.17999043269066, 30.411197019821028],
+                'Free Speech Alley': [-91.17779346677747, 30.41320399284682],
+                'Parade Ground': [-91.17782299799862, 30.414488951560106]
+            },
+            events: {
+                'EsportsLSU Super Smash Bros Melee Tournament': [-91.17766427993774, 30.413768593037344], // Student Union coordinates
+                'Art Sale': [-91.17779346677747, 30.41320399284682], // Free Speech Alley coordinates
+                'Night of 1000 Donuts': [-91.18020361641825, 30.414403792577836], // Library coordinates
+                'Nifty Fifties Nutcracker Auditions': [-91.17906528057395, 30.413187536318254], // Coates coordinates
+                'Digital Art Showcase': [-91.17999043269066, 30.411197019821028], // Art Building coordinates
+                'Ceramic Workshop': [-91.17999043269066, 30.411197019821028], // Art Building coordinates
+                'Kayaking Trip Planning': [-91.1772527830808, 30.412686148493126], // Student Union coordinates
+                'Chess Tournament': [-91.1808370061389, 30.41350846773524] // Prescott coordinates
+            },
+            memories: {
+                'First Class': [-91.1808370061389, 30.41350846773524],
+                'Met Friends': [-91.18020361641825, 30.414403792577836],
+                'Study Session': [-91.17906528057395, 30.413187536318254]
+            },
+            visited: {
+                'Union': [-91.17766427993774, 30.413768593037344],
+                'UREC': [-91.17572235107422, 30.409925012439716],
+                'Bookstore': [-91.17766427993774, 30.413768593037344]
+            },
+            clubs: {
+                'ACM Club': [-91.1808370061389, 30.41350846773524],
+                'Chess Club': [-91.17906528057395, 30.413187536318254],
+                'Sports Club': [-91.17572235107422, 30.409925012439716]
             }
+        };
+
+        let activeMarkers = [];
+
+        function clearMarkers() {
+            activeMarkers.forEach(marker => marker.remove());
+            activeMarkers = [];
+        }
+
+        function showPins(category) {
+            clearMarkers();
+            const pins = pinCategories[category];
+
+            for (const [name, coords] of Object.entries(pins)) {
+                const marker = new mapboxgl.Marker()
+                    .setLngLat(coords)
+                    .setPopup(new mapboxgl.Popup().setHTML(name))
+                    .addTo(map);
+
+                marker.getElement().addEventListener('click', () => {
+                    invokeCSSharpAction('markerClicked', `${category}:${name}`);
+                });
+
+                activeMarkers.push(marker);
+            }
+        }
+
+        const bounds = [
+            [-91.1817342, 30.4120415],
+            [-91.1770119, 30.4146566]
+        ];
+
+        const map = new mapboxgl.Map({
+            container: 'map',
+            maxBounds: bounds,
+            zoom: 12,
+            center: [-91.18267, 30.41600],
+            style: 'mapbox://styles/mapbox/dark-v11'
         });
 
-        // Show default locations
-        showPins('locations');
-    });
+        map.on('load', () => {
+            // Add LSU map overlay
+            map.addSource('lsu-map', {
+                'type': 'image',
+                'url': 'https://carts.lsu.edu/admin/uploads/map_better_colors_1_1116943474.png',
+                'coordinates': [
+                    [-91.18267625797104, 30.416002186821842],
+                    [-91.1761111830366, 30.416002186821842],
+                    [-91.1761111830366, 30.41074748221844],
+                    [-91.18267625797104, 30.41074748221844]
+                ]
+            });
 
-    // Bridge to C#
-    function invokeCSSharpAction(action, data) {
-        if (window.webkit && window.webkit.messageHandlers) {
-            window.webkit.messageHandlers.invokeAction.postMessage(
-                JSON.stringify({ action, data })
-            );
+            map.addLayer({
+                'id': 'lsu-overlay',
+                'type': 'raster',
+                'source': 'lsu-map',
+                'paint': {
+                    'raster-fade-duration': 0,
+                    'raster-opacity': 1
+                }
+            });
+
+            // Show default locations
+            showPins('locations');
+        });
+
+        // Bridge to C#
+        function invokeCSSharpAction(action, data) {
+            if (window.webkit && window.webkit.messageHandlers) {
+                window.webkit.messageHandlers.invokeAction.postMessage(
+                    JSON.stringify({ action, data })
+                );
+            }
         }
-    }
-</script>
+    </script>
 </body>
+
 </html>
