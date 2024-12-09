@@ -16,7 +16,7 @@ namespace InteractiveLSUMap
             try
             {
                 // Use absolute route for navigation
-                await Shell.Current.GoToAsync("main");
+                await Shell.Current.GoToAsync("//map");
             }
             catch (Exception ex)
             {
