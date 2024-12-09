@@ -11,7 +11,8 @@ public class HybridWebView : WebView
         set => SetValue(JavaScriptFunctionProperty, value);
     }
 
-    public void InvokeJavaScriptFunction(string function) =>
-        MainThread.BeginInvokeOnMainThread(async () =>
-            await EvaluateJavaScriptAsync(function));
+    public async Task InvokeJavaScriptFunction(string function)
+    {
+        await MainThread.InvokeOnMainThreadAsync(() => EvaluateJavaScriptAsync(function));
+    }
 }

@@ -40,11 +40,11 @@ namespace InteractiveLSUMap
                 await Task.Delay(500); // Give map time to initialize
 
                 // First switch to events filter
-                mapView.InvokeJavaScriptFunction("showPins('events')");
+                await mapView.InvokeJavaScriptFunction("showPins('events')");
 
                 // Then focus on specific event
                 await Task.Delay(100); // Small delay to ensure pins are placed
-                mapView.InvokeJavaScriptFunction($"focusOnEvent('{eventTitle}')");
+                await mapView.InvokeJavaScriptFunction($"focusOnEvent('{eventTitle}')");
 
                 // Update UI state
                 currentFilter = "events";
@@ -95,7 +95,7 @@ namespace InteractiveLSUMap
 
                 // Show initial pins after small delay
                 await Task.Delay(500);
-                mapView.InvokeJavaScriptFunction("showPins('locations')");
+                await mapView.InvokeJavaScriptFunction("showPins('locations')");
             }
             catch (Exception ex)
             {
@@ -105,22 +105,29 @@ namespace InteractiveLSUMap
 
         private async void OnClassesChanged(object sender, EventArgs e)
         {
-            // Update class data regardless of current filter
+            // Update class data
             await UpdateClassPinsData();
 
-            // Only show pins if currently viewing classes
+            // If currently viewing classes, update the display immediately
             if (currentFilter == "classes")
             {
-                mapView.InvokeJavaScriptFunction("showPins('classes')");
+                clearExistingPins();  // Add this line
+                await mapView.InvokeJavaScriptFunction("showPins('classes')");
             }
 
             Console.WriteLine($"Classes updated. Current filter: {currentFilter}"); // Debug log
         }
 
+        // Add this helper method to clear existing pins
+        private async void clearExistingPins()
+        {
+            await mapView.InvokeJavaScriptFunction("clearMarkers()");
+        }
+
         private async void UpdateClassPins()
         {
             await UpdateClassPinsData();
-            mapView.InvokeJavaScriptFunction("showPins('classes')");
+            await mapView.InvokeJavaScriptFunction("showPins('classes')");
         }
 
         private async Task UpdateClassPinsData()
@@ -182,7 +189,7 @@ namespace InteractiveLSUMap
                                 (isDropdownOpen ? " ▲" : " ▼");
         }
 
-        private void OnFilterSelected(object sender, SelectionChangedEventArgs e)
+        private async void OnFilterSelected(object sender, SelectionChangedEventArgs e)
         {
             if (e.CurrentSelection.FirstOrDefault() is string selectedFilter)
             {
@@ -195,7 +202,7 @@ namespace InteractiveLSUMap
                 }
                 else
                 {
-                    mapView.InvokeJavaScriptFunction($"showPins('{currentFilter}')");
+                    await mapView.InvokeJavaScriptFunction($"showPins('{currentFilter}')");
                 }
 
                 dropdownList.IsVisible = false;
