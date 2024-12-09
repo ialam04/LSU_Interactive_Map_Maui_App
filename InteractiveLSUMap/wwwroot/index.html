@@ -49,7 +49,7 @@
                 'Parade Ground': [-91.17782299799862, 30.414488951560106]
             },
             classes: function () {
-                return getUserClasses();
+                return window.userClasses || {};
             },
             events: {
                 'EsportsLSU Super Smash Bros Melee Tournament': [-91.1772527830808, 30.412686148493126], // Student Union coordinates
@@ -105,6 +105,32 @@
                     const popupContent = `
                 <strong>${caption}</strong><br>
                 Date: ${data.date}
+            `;
+
+                    const marker = new mapboxgl.Marker({
+                        element: el,
+                        anchor: 'bottom'
+                    })
+                        .setLngLat(data.coordinates)
+                        .setPopup(new mapboxgl.Popup().setHTML(popupContent))
+                        .addTo(map);
+
+                    activeMarkers.push(marker);
+                }
+            }
+            else if (category === 'classes') {
+                pins = window.userClasses;
+                console.log('Class pins:', pins);
+
+                for (const [building, data] of Object.entries(pins)) {
+                    const el = document.createElement('div');
+                    el.className = 'custom-marker';
+                    el.innerHTML = createMarkerElement(categoryColors[category]);
+
+                    const popupContent = `
+                <strong>${building}</strong><br>
+                Classes:<br>
+                ${data.classes.join('<br>')}
             `;
 
                     const marker = new mapboxgl.Marker({
