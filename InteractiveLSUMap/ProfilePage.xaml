@@ -29,11 +29,19 @@
             </Grid>
 
             <!-- Profile Picture -->
-            <Frame HeightRequest="200" WidthRequest="200" CornerRadius="100"
+            <Frame HeightRequest="200" WidthRequest="200" CornerRadius="100" Padding="0"
                    BackgroundColor="White" HorizontalOptions="Center">
                 <Image Source="{Binding ProfilePicturePath}" Aspect="AspectFill" />
             </Frame>
-
+            
+            <ImageButton Source="edit.png" 
+                         HeightRequest="40" 
+                         WidthRequest="40" 
+                         CornerRadius="20" 
+                         HorizontalOptions="Center" 
+                         Margin="0,10,0,0"
+                         Command="{Binding EditProfilePictureCommand}" />
+            
             <!-- Name and Degree -->
             <Label Text="{Binding FullName}" FontAttributes="Bold" FontSize="Large" FontFamily="Aleo" HorizontalOptions="Center" />
             <Label Text="{Binding Degree}" FontAttributes="Italic" FontSize="Medium" FontFamily="Aleo" HorizontalOptions="Center" />
