@@ -12,7 +12,7 @@ namespace InteractiveLSUMap.ViewModels
         public ObservableCollection<string> Classes { get; }
         public ObservableCollection<string> AvailableClubs { get; }
         public ObservableCollection<string> AvailableClasses { get; }
-
+        public Dictionary<string, string> ClassLocations { get; }
         private string _profilePicturePath = "profile_photo.png"; // Default profile picture
         public string ProfilePicturePath
         {
@@ -79,13 +79,39 @@ namespace InteractiveLSUMap.ViewModels
                 "MATH 4058", "MATH 4066", "MATH 4153", "MATH 2060", "MATH 2065", 
                 "MATH 2090", "MATH 1550", "MATH 2070", "ENGL 2000"
             };
-
+            
+            ClassLocations = new Dictionary<string, string>
+            {
+                { "MATH 4058", "Lockett Hall" },
+                { "MATH 4066", "Lockett Hall" },
+                { "MATH 4153", "Lockett Hall" },
+                { "MATH 2060", "Coates Hall" },
+                { "MATH 2065", "Coates Hall" },
+                { "MATH 2090", "Coates Hall" },
+                { "MATH 1550", "Nicholson Hall" },
+                { "MATH 2070", "Nicholson Hall" },
+                { "ENGL 2000", "Coates Hall" }
+            };
 
             ConfirmAddClubCommand = new Command(OnConfirmAddClub);
             ConfirmAddClassCommand = new Command(OnConfirmAddClass);
             EditProfilePictureCommand = new Command(OnEditProfilePicture);
             SaveCommand = new Command(OnSave);
             CancelCommand = new Command(OnCancel);
+        }
+        
+        public void GetClassLocation(string className)
+        {
+            var classData = new ProfileViewModel();
+
+            if (classData.ClassLocations.TryGetValue(className, out string location))
+            {
+                Console.WriteLine($"{className} is located in {location}");
+            }
+            else
+            {
+                Console.WriteLine($"Location for {className} not found");
+            }
         }
 
         private void OnConfirmAddClub()
