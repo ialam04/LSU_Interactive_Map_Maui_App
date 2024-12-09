@@ -2,8 +2,52 @@
 
 namespace InteractiveLSUMap
 {
+    [QueryProperty(nameof(EventTitle), "eventTitle")]
+    [QueryProperty(nameof(EventLocation), "eventLocation")]
     public partial class MainPage : ContentPage
     {
+        private string eventTitle;
+        private string eventLocation;
+
+        public string EventTitle
+        {
+            get => eventTitle;
+            set
+            {
+                eventTitle = value;
+                FocusOnEvent();
+            }
+        }
+
+        public string EventLocation
+        {
+            get => eventLocation;
+            set
+            {
+                eventLocation = value;
+                FocusOnEvent();
+            }
+        }
+
+        private async void FocusOnEvent()
+        {
+            if (!string.IsNullOrEmpty(eventTitle) && !string.IsNullOrEmpty(eventLocation))
+            {
+                // Ensure map is loaded first
+                await Task.Delay(500); // Give map time to initialize
+
+                // First switch to events filter
+                mapView.InvokeJavaScriptFunction("showPins('events')");
+
+                // Then focus on specific event
+                await Task.Delay(100); // Small delay to ensure pins are placed
+                mapView.InvokeJavaScriptFunction($"focusOnEvent('{eventTitle}')");
+
+                // Update UI state
+                currentFilter = "events";
+                dropdownButton.Text = "Events ▼";
+            }
+        }
         private string currentFilter = "locations";
         private bool isDropdownOpen = false;
         private readonly List<string> filterOptions = new()

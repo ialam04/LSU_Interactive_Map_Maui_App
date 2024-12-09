@@ -41,13 +41,13 @@
                 'Parade Ground': [-91.17782299799862, 30.414488951560106]
             },
             events: {
-                'EsportsLSU Super Smash Bros Melee Tournament': [-91.17766427993774, 30.413768593037344], // Student Union coordinates
+                'EsportsLSU Super Smash Bros Melee Tournament': [-91.1772527830808, 30.412686148493126], // Student Union coordinates
                 'Art Sale': [-91.17779346677747, 30.41320399284682], // Free Speech Alley coordinates
                 'Night of 1000 Donuts': [-91.18020361641825, 30.414403792577836], // Library coordinates
                 'Nifty Fifties Nutcracker Auditions': [-91.17906528057395, 30.413187536318254], // Coates coordinates
                 'Digital Art Showcase': [-91.17999043269066, 30.411197019821028], // Art Building coordinates
                 'Ceramic Workshop': [-91.17999043269066, 30.411197019821028], // Art Building coordinates
-                'Kayaking Trip Planning': [-91.1772527830808, 30.412686148493126], // Student Union coordinates
+                'Kayaking Trip Planning': [-91.17782299799862, 30.414488951560106], // Student Union coordinates
                 'Chess Tournament': [-91.1808370061389, 30.41350846773524] // Prescott coordinates
             },
             memories: {
@@ -102,7 +102,9 @@
             maxBounds: bounds,
             zoom: 12,
             center: [-91.18267, 30.41600],
-            style: 'mapbox://styles/mapbox/dark-v11'
+            style: 'mapbox://styles/mapbox/dark-v11',
+            animate: true,
+            essential: true
         });
 
         map.on('load', () => {
@@ -131,6 +133,37 @@
             // Show default locations
             showPins('locations');
         });
+
+        function focusOnEvent(eventTitle) {
+            console.log("Focusing on event:", eventTitle); // Debug log
+            const eventCoords = pinCategories.events[eventTitle];
+
+            if (eventCoords) {
+                console.log("Found coordinates:", eventCoords); // Debug log
+
+                // Ensure markers are cleared and events are shown
+                clearMarkers();
+                showPins('events');
+
+                // Small delay to ensure markers are placed
+                setTimeout(() => {
+                    map.flyTo({
+                        center: eventCoords,
+                        zoom: 17,
+                        essential: true
+                    });
+
+                    // Find and open popup
+                    activeMarkers.forEach(marker => {
+                        if (marker.getPopup().getHTML() === eventTitle) {
+                            setTimeout(() => marker.togglePopup(), 500);
+                        }
+                    });
+                }, 100);
+            } else {
+                console.log("Event coordinates not found for:", eventTitle); // Debug log
+            }
+        }
 
         // Bridge to C#
         function invokeCSSharpAction(action, data) {

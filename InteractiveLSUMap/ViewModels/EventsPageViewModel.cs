@@ -8,7 +8,7 @@ namespace InteractiveLSUMap.ViewModels
     {
         public string ProfilePicturePath { get; set; } = "profile_photo.png";
         public string Greeting { get; set; } = "Hey Ibrahim!";
-        
+
         public ObservableCollection<Event> EventsToday { get; set; }
         public ObservableCollection<Event> FilteredEventsToday { get; private set; }
         public ObservableCollection<Event> ClubEvents { get; set; }
@@ -166,7 +166,7 @@ namespace InteractiveLSUMap.ViewModels
                 }
             };
 
-            
+
 
             FilteredEventsToday = new ObservableCollection<Event>(EventsToday.Take(2));
             FilteredClubEvents = new ObservableCollection<Event>(ClubEvents.Take(2));
@@ -174,7 +174,7 @@ namespace InteractiveLSUMap.ViewModels
             ViewMoreClubCommand = new Command(OnViewMoreClub);
             EventClickedCommand = new Command<Event>(OnEventClicked);
             CloseEventDetailsCommand = new Command(CloseEventDetails);
-            OpenMapCommand = new Command(OpenMap);
+            OpenMapCommand = new Command(async () => await OpenMap());
         }
 
         private void OnViewMore()
@@ -191,7 +191,7 @@ namespace InteractiveLSUMap.ViewModels
             }
             OnPropertyChanged(nameof(FilteredEventsToday));
         }
-        
+
         private void OnViewMoreClub()
         {
             if (FilteredClubEvents.Count < ClubEvents.Count)
@@ -220,9 +220,18 @@ namespace InteractiveLSUMap.ViewModels
             IsEventDetailsVisible = false;
         }
 
-        private void OpenMap()
+        private async Task OpenMap()
         {
-            // Logic to open map for the selected event
+            if (SelectedEvent != null)
+            {
+                var navigationParameter = new Dictionary<string, object>
+        {
+            { "eventTitle", SelectedEvent.Title },
+            { "eventLocation", SelectedEvent.Location }
+        };
+
+                await Shell.Current.GoToAsync("main", navigationParameter);
+            }
         }
     }
 
