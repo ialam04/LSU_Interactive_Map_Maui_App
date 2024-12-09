@@ -36,6 +36,7 @@
                             <Frame BackgroundColor="White" Padding="10" Margin="5">
                                 <StackLayout Orientation="Horizontal">
                                     <ImageButton Source="{Binding Image}" HeightRequest="50" WidthRequest="50" Aspect="AspectFill"
+                                                 Margin="0,0,10,0"
                                                  CommandParameter="{Binding .}"
                                                  Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:EventsPageViewModel}}, Path=EventClickedCommand}" />
                                     <StackLayout>
@@ -70,6 +71,7 @@
                                 <StackLayout Orientation="Horizontal">
                                     <ImageButton Source="{Binding Image}" HeightRequest="50" WidthRequest="50" Aspect="AspectFill"
                                                  CommandParameter="{Binding .}"
+                                                 Margin="0,0,10,0"
                                                  Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:EventsPageViewModel}}, Path=EventClickedCommand}" />
                                     <StackLayout>
                                         <Label Text="{Binding Title}" FontAttributes="Bold" FontSize="Medium" />
@@ -107,11 +109,10 @@
                    CornerRadius="15"
                    VerticalOptions="Center"
                    HorizontalOptions="Center"
-                   WidthRequest="300"
-                   HeightRequest="400">
+                   WidthRequest="300">
                 <Grid>
                     <!-- Close Button -->
-                    <ImageButton Source="close_icon.png"
+                    <ImageButton Source="close_icon.svg"
                                  HorizontalOptions="End"
                                  VerticalOptions="Start"
                                  Command="{Binding CloseEventDetailsCommand}" />
