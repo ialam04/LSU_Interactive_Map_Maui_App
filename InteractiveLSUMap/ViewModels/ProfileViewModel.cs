@@ -11,6 +11,7 @@ namespace InteractiveLSUMap.ViewModels
 
         public string FullName { get; set; }
         public string Degree { get; set; }
+        public event EventHandler ClassesChanged;
         public ObservableCollection<string> Clubs { get; }
         public ObservableCollection<string> Classes { get; }
         public ObservableCollection<string> AvailableClubs { get; }
@@ -60,7 +61,7 @@ namespace InteractiveLSUMap.ViewModels
             FullName = "Ibrahim Alam";
             Degree = "Mathematics - Data Science, BS";
 
-            Clubs = new ObservableCollection<string> 
+            Clubs = new ObservableCollection<string>
             {
                 "DADA",
                 "CASA"
@@ -69,7 +70,7 @@ namespace InteractiveLSUMap.ViewModels
             {
                 "MATH 4066", "MATH 4153", "MATH 2090", "ENGL 2000"
             };
-            
+
             AvailableClubs = new ObservableCollection<string>
             {
                 "DADA",
@@ -80,10 +81,10 @@ namespace InteractiveLSUMap.ViewModels
 
             AvailableClasses = new ObservableCollection<string>
             {
-                "MATH 4058", "MATH 4066", "MATH 4153", "MATH 2060", "MATH 2065", 
+                "MATH 4058", "MATH 4066", "MATH 4153", "MATH 2060", "MATH 2065",
                 "MATH 2090", "MATH 1550", "MATH 2070", "ENGL 2000"
             };
-            
+
             ClassLocations = new Dictionary<string, string>
             {
                 { "MATH 4058", "Lockett Hall" },
@@ -103,7 +104,7 @@ namespace InteractiveLSUMap.ViewModels
             SaveCommand = new Command(OnSave);
             CancelCommand = new Command(OnCancel);
         }
-        
+
         public void GetClassLocation(string className)
         {
             var classData = new ProfileViewModel();
@@ -132,9 +133,38 @@ namespace InteractiveLSUMap.ViewModels
         {
             if (!string.IsNullOrWhiteSpace(SelectedClass) && !Classes.Contains(SelectedClass))
             {
-                Classes.Add(SelectedClass);
-                Instance.Classes.Add(SelectedClass);
-                SelectedClass = null; // Reset selection
+                // Verify class has a valid location before adding
+                if (ClassLocations.TryGetValue(SelectedClass, out string building))
+                {
+                    // Update both local and instance collections
+                    Classes.Add(SelectedClass);
+                    if (this != Instance)
+                    {
+                        Instance.Classes.Add(SelectedClass);
+                    }
+
+                    Console.WriteLine($"Added class {SelectedClass} in {building}"); // Debug log
+
+                    SelectedClass = null;
+                    ClassesChanged?.Invoke(this, EventArgs.Empty);
+                }
+                else
+                {
+                    // Handle invalid class location
+                    Application.Current.MainPage.DisplayAlert(
+                        "Error",
+                        $"Location not found for {SelectedClass}",
+                        "OK");
+                }
+            }
+        }
+
+        public void RemoveClass(string className)
+        {
+            if (Classes.Contains(className))
+            {
+                Classes.Remove(className);
+                ClassesChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -154,10 +184,10 @@ namespace InteractiveLSUMap.ViewModels
             {
                 // Show the action sheet to choose between taking a photo or picking one
                 string action = await Application.Current.MainPage.DisplayActionSheet(
-                    "Change Profile Picture", 
-                    "Cancel", 
-                    null, 
-                    "Take Photo", 
+                    "Change Profile Picture",
+                    "Cancel",
+                    null,
+                    "Take Photo",
                     "Choose from Gallery");
 
                 if (action == "Take Photo")
@@ -198,15 +228,15 @@ namespace InteractiveLSUMap.ViewModels
             catch (PermissionException)
             {
                 await Application.Current.MainPage.DisplayAlert(
-                    "Permission Denied", 
-                    "Camera or gallery permissions are required to change your profile picture.", 
+                    "Permission Denied",
+                    "Camera or gallery permissions are required to change your profile picture.",
                     "OK");
             }
             catch (Exception ex)
             {
                 await Application.Current.MainPage.DisplayAlert(
-                    "Error", 
-                    $"An error occurred while changing your profile picture: {ex.Message}", 
+                    "Error",
+                    $"An error occurred while changing your profile picture: {ex.Message}",
                     "OK");
             }
         }

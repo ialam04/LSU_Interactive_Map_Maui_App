@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using InteractiveLSUMap.ViewModels;
 
 namespace InteractiveLSUMap
 {
@@ -8,6 +9,8 @@ namespace InteractiveLSUMap
     {
         private string eventTitle;
         private string eventLocation;
+        private ProfileViewModel profileVM;
+
 
         public string EventTitle
         {
@@ -55,15 +58,25 @@ namespace InteractiveLSUMap
         "Locations",
         "Events",
         "Memories",
-        "Visited",
-        "Clubs"
+        "Clubs",
+        "Classes"
         };
 
         public MainPage()
         {
             InitializeComponent();
             filterList.ItemsSource = filterOptions;
+
+            // Use the singleton instance
+            profileVM = ProfileViewModel.Instance;
+            profileVM.ClassesChanged += OnClassesChanged;
+
+            // Initialize map and set default view
             InitializeMap();
+
+            // Set initial filter to locations
+            currentFilter = "locations";
+            dropdownButton.Text = "Locations ▼";
         }
 
         private async void InitializeMap()
@@ -72,14 +85,91 @@ namespace InteractiveLSUMap
             {
                 var html = await FileSystem.OpenAppPackageFileAsync("wwwroot/index.html");
                 using var reader = new StreamReader(html);
-                mapView.Source = new HtmlWebViewSource
-                {
-                    Html = await reader.ReadToEndAsync()
-                };
+                var htmlContent = await reader.ReadToEndAsync();
+
+                // Initialize class data
+                await UpdateClassPinsData();
+
+                // Initialize map view
+                mapView.Source = new HtmlWebViewSource { Html = htmlContent };
+
+                // Show initial pins after small delay
+                await Task.Delay(500);
+                mapView.InvokeJavaScriptFunction("showPins('locations')");
             }
             catch (Exception ex)
             {
                 await DisplayAlert("Error", $"Failed to load map: {ex.Message}", "OK");
+            }
+        }
+
+        private async void OnClassesChanged(object sender, EventArgs e)
+        {
+            // Update class data regardless of current filter
+            await UpdateClassPinsData();
+
+            // Only show pins if currently viewing classes
+            if (currentFilter == "classes")
+            {
+                mapView.InvokeJavaScriptFunction("showPins('classes')");
+            }
+
+            Console.WriteLine($"Classes updated. Current filter: {currentFilter}"); // Debug log
+        }
+
+        private async void UpdateClassPins()
+        {
+            await UpdateClassPinsData();
+            mapView.InvokeJavaScriptFunction("showPins('classes')");
+        }
+
+        private async Task UpdateClassPinsData()
+        {
+            try
+            {
+                var buildingClassesMap = new Dictionary<string, List<string>>();
+
+                Console.WriteLine($"Current classes: {string.Join(", ", profileVM.Classes)}"); // Debug log
+
+                foreach (var className in profileVM.Classes)
+                {
+                    if (profileVM.ClassLocations.TryGetValue(className, out string building))
+                    {
+                        Console.WriteLine($"Mapping {className} to {building}"); // Debug log
+
+                        if (!buildingClassesMap.ContainsKey(building))
+                        {
+                            buildingClassesMap[building] = new List<string>();
+                        }
+                        buildingClassesMap[building].Add(className);
+                    }
+                    else
+                    {
+                        Console.WriteLine($"No location found for {className}"); // Debug log
+                    }
+                }
+
+                var buildingCoords = new Dictionary<string, double[]>
+        {
+            {"Lockett Hall", new[] {-91.1818003245514, 30.413306022930918}},
+            {"Coates Hall", new[] {-91.17906528057395, 30.413187536318254}},
+            {"Nicholson Hall", new[] {-91.17865131560713, 30.41253870863463}}
+        };
+
+                var classLocationsData = buildingClassesMap
+                    .Where(kvp => buildingCoords.ContainsKey(kvp.Key))
+                    .ToDictionary(
+                        kvp => kvp.Key,
+                        kvp => new { coordinates = buildingCoords[kvp.Key], classes = kvp.Value }
+                    );
+
+                Console.WriteLine($"Final location data: {JsonSerializer.Serialize(classLocationsData)}"); // Debug log
+
+                mapView.InvokeJavaScriptFunction($"window.userClasses = {JsonSerializer.Serialize(classLocationsData)};");
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Error", $"Failed to update class data: {ex.Message}", "OK");
             }
         }
 
@@ -98,7 +188,16 @@ namespace InteractiveLSUMap
             {
                 currentFilter = selectedFilter.ToLower();
                 dropdownButton.Text = selectedFilter + " ▼";
-                mapView.InvokeJavaScriptFunction($"showPins('{currentFilter}')");
+
+                if (currentFilter == "classes")
+                {
+                    UpdateClassPins(); // Update pins when switching to classes view
+                }
+                else
+                {
+                    mapView.InvokeJavaScriptFunction($"showPins('{currentFilter}')");
+                }
+
                 dropdownList.IsVisible = false;
                 isDropdownOpen = false;
             }

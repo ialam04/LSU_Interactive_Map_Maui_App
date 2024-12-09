@@ -27,6 +27,14 @@
     <script>
         mapboxgl.accessToken = 'pk.eyJ1IjoiamFja3NvbmRlc2NhbnQiLCJhIjoiY200ZXlqc2xhMTBldzJrcHNocWxydW1hNCJ9.iq0og4lKwg3YrgcdgFhtxA';
 
+        const categoryColors = {
+            locations: '#FF0000', // Red
+            events: '#00FF00',    // Green
+            memories: '#0000FF',  // Blue
+            clubs: '#800080',      // Purple
+            classes: '#FFA500'       // Orange for classes
+        };
+
         const pinCategories = {
             locations: {
                 'Prescott': [-91.1808370061389, 30.41350846773524],
@@ -39,6 +47,9 @@
                 'Art & Design': [-91.17999043269066, 30.411197019821028],
                 'Free Speech Alley': [-91.17779346677747, 30.41320399284682],
                 'Parade Ground': [-91.17782299799862, 30.414488951560106]
+            },
+            classes: function () {
+                return getUserClasses();
             },
             events: {
                 'EsportsLSU Super Smash Bros Melee Tournament': [-91.1772527830808, 30.412686148493126], // Student Union coordinates
@@ -55,11 +66,11 @@
                 'Met Friends': [-91.18020361641825, 30.414403792577836],
                 'Study Session': [-91.17906528057395, 30.413187536318254]
             },
-            visited: {
-                'Union': [-91.17766427993774, 30.413768593037344],
-                'UREC': [-91.17572235107422, 30.409925012439716],
-                'Bookstore': [-91.17766427993774, 30.413768593037344]
-            },
+            // visited: {
+            //     'Union': [-91.1772527830808, 30.412686148493126],
+            //     'Hill Memorial Library': [-91.18146725890757, 30.41433396833641],
+            //     'Natural Science Museum': [-91.1801525274213, 30.415339295026325]
+            // },
             clubs: {
                 'ACM Club': [-91.1808370061389, 30.41350846773524],
                 'Chess Club': [-91.17906528057395, 30.413187536318254],
@@ -74,21 +85,66 @@
             activeMarkers = [];
         }
 
+        function createMarkerElement(color) {
+            return `<svg width="24" height="32" viewBox="0 0 24 32">
+        <path fill="${color}" d="M12 0C5.383 0 0 5.383 0 12c0 9 12 20 12 20s12-11 12-20c0-6.617-5.383-12-12-12zm0 16c-2.206 0-4-1.794-4-4s1.794-4 4-4 4 1.794 4 4-1.794 4-4 4z"/>
+    </svg>`;
+        }
+
         function showPins(category) {
             clearMarkers();
-            const pins = pinCategories[category];
+            let pins;
 
-            for (const [name, coords] of Object.entries(pins)) {
-                const marker = new mapboxgl.Marker()
-                    .setLngLat(coords)
-                    .setPopup(new mapboxgl.Popup().setHTML(name))
-                    .addTo(map);
+            if (category === 'classes') {
+                pins = window.userClasses;
+                console.log('Class pins:', pins);
 
-                marker.getElement().addEventListener('click', () => {
-                    invokeCSSharpAction('markerClicked', `${category}:${name}`);
-                });
+                // Handle grouped class data
+                for (const [building, data] of Object.entries(pins)) {
+                    const el = document.createElement('div');
+                    el.className = 'custom-marker';
+                    el.innerHTML = createMarkerElement(categoryColors[category]);
 
-                activeMarkers.push(marker);
+                    const popupContent = `
+                <strong>${building}</strong><br>
+                Classes:<br>
+                ${data.classes.map(className => `- ${className}`).join('<br>')}
+            `;
+
+                    const marker = new mapboxgl.Marker({
+                        element: el,
+                        anchor: 'bottom'
+                    })
+                        .setLngLat(data.coordinates)
+                        .setPopup(new mapboxgl.Popup().setHTML(popupContent))
+                        .addTo(map);
+
+                    activeMarkers.push(marker);
+                }
+            } else {
+                // Handle regular location pins
+                pins = pinCategories[category];
+
+                if (!pins) {
+                    console.log('No pins found for category:', category);
+                    return;
+                }
+
+                for (const [name, coords] of Object.entries(pins)) {
+                    const el = document.createElement('div');
+                    el.className = 'custom-marker';
+                    el.innerHTML = createMarkerElement(categoryColors[category]);
+
+                    const marker = new mapboxgl.Marker({
+                        element: el,
+                        anchor: 'bottom'
+                    })
+                        .setLngLat(coords)
+                        .setPopup(new mapboxgl.Popup().setHTML(name))
+                        .addTo(map);
+
+                    activeMarkers.push(marker);
+                }
             }
         }
 
