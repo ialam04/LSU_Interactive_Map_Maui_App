@@ -61,10 +61,8 @@
                 'Kayaking Trip Planning': [-91.17782299799862, 30.414488951560106], // Student Union coordinates
                 'Chess Tournament': [-91.1808370061389, 30.41350846773524] // Prescott coordinates
             },
-            memories: {
-                'First Class': [-91.1808370061389, 30.41350846773524],
-                'Met Friends': [-91.18020361641825, 30.414403792577836],
-                'Study Session': [-91.17906528057395, 30.413187536318254]
+            memories: function () {
+                return window.userMemories || {};
             },
             // visited: {
             //     'Union': [-91.1772527830808, 30.412686148493126],
@@ -95,20 +93,18 @@
             clearMarkers();
             let pins;
 
-            if (category === 'classes') {
-                pins = window.userClasses;
-                console.log('Class pins:', pins);
+            if (category === 'memories') {
+                pins = window.userMemories;
+                console.log('Memory pins:', pins);
 
-                // Handle grouped class data
-                for (const [building, data] of Object.entries(pins)) {
+                for (const [caption, data] of Object.entries(pins)) {
                     const el = document.createElement('div');
                     el.className = 'custom-marker';
                     el.innerHTML = createMarkerElement(categoryColors[category]);
 
                     const popupContent = `
-                <strong>${building}</strong><br>
-                Classes:<br>
-                ${data.classes.map(className => `- ${className}`).join('<br>')}
+                <strong>${caption}</strong><br>
+                Date: ${data.date}
             `;
 
                     const marker = new mapboxgl.Marker({

@@ -10,6 +10,8 @@ namespace InteractiveLSUMap
         private string eventTitle;
         private string eventLocation;
         private ProfileViewModel profileVM;
+        private MemoriesViewModel memoriesVM;
+
 
 
         public string EventTitle
@@ -70,6 +72,9 @@ namespace InteractiveLSUMap
             // Use the singleton instance
             profileVM = ProfileViewModel.Instance;
             profileVM.ClassesChanged += OnClassesChanged;
+
+            memoriesVM = MemoriesViewModel.Instance;
+            memoriesVM.MemoriesChanged += OnMemoriesChanged;
 
             // Initialize map and set default view
             InitializeMap();
@@ -232,6 +237,27 @@ namespace InteractiveLSUMap
 
                 await DisplayAlert(name, details, "OK");
             }
+        }
+
+        private async void OnMemoriesChanged(object sender, EventArgs e)
+        {
+            await UpdateMemoryPinsData();
+            if (currentFilter == "memories")
+            {
+                await mapView.InvokeJavaScriptFunction("showPins('memories')");
+            }
+        }
+
+        private async Task UpdateMemoryPinsData()
+        {
+            var memoriesData = memoriesVM.Memories
+                .Where(m => m.Coordinates != null)
+                .ToDictionary(
+                    m => m.Caption,
+                    m => new { coordinates = m.Coordinates, caption = m.Caption, date = m.Date }
+                );
+
+            await mapView.InvokeJavaScriptFunction($"window.userMemories = {JsonSerializer.Serialize(memoriesData)};");
         }
 
         private async void OnProfileButtonClicked(object sender, EventArgs e)
