@@ -5,11 +5,7 @@
              Title="LSU Events"
              BackgroundColor="#f2c14e"
              Shell.NavBarIsVisible="false">
-
-    <ContentPage.BindingContext>
-        <viewModels:EventsPageViewModel />
-    </ContentPage.BindingContext>
-
+    
     <Grid>
         <!-- Main Content -->
         <ScrollView Grid.Row="0">

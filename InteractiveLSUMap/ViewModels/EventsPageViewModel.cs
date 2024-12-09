@@ -12,6 +12,8 @@ namespace InteractiveLSUMap.ViewModels
         public ObservableCollection<Event> EventsToday { get; set; }
         public ObservableCollection<Event> FilteredEventsToday { get; private set; }
         public ObservableCollection<Event> ClubEvents { get; set; }
+        public ObservableCollection<Event> EnrolledClubEvents { get; private set; }
+        public ObservableCollection<string> StudentClubs { get; set; }
         public ObservableCollection<Event> FilteredClubEvents { get; private set; }
 
         private Event _selectedEvent;
@@ -74,7 +76,7 @@ namespace InteractiveLSUMap.ViewModels
             }
         }
 
-        public EventsPageViewModel()
+        public EventsPageViewModel(ProfileViewModel profileViewModel)
         {
             // Sample data for LSU Events
             EventsToday = new ObservableCollection<Event>
@@ -167,9 +169,10 @@ namespace InteractiveLSUMap.ViewModels
             };
 
 
-
+            StudentClubs = new ObservableCollection<string>(profileViewModel.Clubs);
+            EnrolledClubEvents = new ObservableCollection<Event>(ClubEvents.Where(e => StudentClubs.Contains(e.Organization)));
+            FilteredClubEvents = new ObservableCollection<Event>(EnrolledClubEvents.Take(2));
             FilteredEventsToday = new ObservableCollection<Event>(EventsToday.Take(2));
-            FilteredClubEvents = new ObservableCollection<Event>(ClubEvents.Take(2));
             ViewMoreCommand = new Command(OnViewMore);
             ViewMoreClubCommand = new Command(OnViewMoreClub);
             EventClickedCommand = new Command<Event>(OnEventClicked);
@@ -194,14 +197,14 @@ namespace InteractiveLSUMap.ViewModels
 
         private void OnViewMoreClub()
         {
-            if (FilteredClubEvents.Count < ClubEvents.Count)
+            if (FilteredClubEvents.Count < EnrolledClubEvents.Count)
             {
-                FilteredClubEvents = new ObservableCollection<Event>(ClubEvents);
+                FilteredClubEvents = new ObservableCollection<Event>(EnrolledClubEvents);
                 ViewMoreClubButtonText = "View Less";
             }
             else
             {
-                FilteredClubEvents = new ObservableCollection<Event>(ClubEvents.Take(2));
+                FilteredClubEvents = new ObservableCollection<Event>(EnrolledClubEvents.Take(2));
                 ViewMoreClubButtonText = "View More";
             }
             OnPropertyChanged(nameof(FilteredClubEvents));

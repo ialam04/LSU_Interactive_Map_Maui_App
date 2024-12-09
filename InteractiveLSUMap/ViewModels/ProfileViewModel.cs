@@ -6,6 +6,9 @@ namespace InteractiveLSUMap.ViewModels
 {
     public class ProfileViewModel : BaseViewModel
     {
+        private static ProfileViewModel _instance;
+        public static ProfileViewModel Instance => _instance ??= new ProfileViewModel();
+
         public string FullName { get; set; }
         public string Degree { get; set; }
         public ObservableCollection<string> Clubs { get; }
@@ -53,13 +56,14 @@ namespace InteractiveLSUMap.ViewModels
 
         public ProfileViewModel()
         {
+
             FullName = "Ibrahim Alam";
-            Degree = "Computer Science - SWE, BS";
+            Degree = "Mathematics - Data Science, BS";
 
             Clubs = new ObservableCollection<string> 
             {
-                "Digital Art & Design Association (DADA)",
-                "Ceramics Arts Student Association (CASA)"
+                "DADA",
+                "CASA"
             };
             Classes = new ObservableCollection<string>
             {
@@ -68,8 +72,8 @@ namespace InteractiveLSUMap.ViewModels
             
             AvailableClubs = new ObservableCollection<string>
             {
-                "Digital Art & Design Association (DADA)",
-                "Ceramics Arts Student Association (CASA)",
+                "DADA",
+                "CASA",
                 "Kayaking Club",
                 "Chess Club"
             };
@@ -119,6 +123,7 @@ namespace InteractiveLSUMap.ViewModels
             if (!string.IsNullOrWhiteSpace(SelectedClub) && !Clubs.Contains(SelectedClub))
             {
                 Clubs.Add(SelectedClub);
+                Instance.Clubs.Add(SelectedClub);
                 SelectedClub = null; // Reset selection
             }
         }
@@ -128,6 +133,7 @@ namespace InteractiveLSUMap.ViewModels
             if (!string.IsNullOrWhiteSpace(SelectedClass) && !Classes.Contains(SelectedClass))
             {
                 Classes.Add(SelectedClass);
+                Instance.Classes.Add(SelectedClass);
                 SelectedClass = null; // Reset selection
             }
         }
