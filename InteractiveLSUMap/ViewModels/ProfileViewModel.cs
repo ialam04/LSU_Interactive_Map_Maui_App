@@ -124,7 +124,10 @@ namespace InteractiveLSUMap.ViewModels
             if (!string.IsNullOrWhiteSpace(SelectedClub) && !Clubs.Contains(SelectedClub))
             {
                 Clubs.Add(SelectedClub);
-                Instance.Clubs.Add(SelectedClub);
+                if (this != Instance)
+                {
+                    Instance.Clubs.Add(SelectedClub);
+                }
                 SelectedClub = null; // Reset selection
             }
         }
