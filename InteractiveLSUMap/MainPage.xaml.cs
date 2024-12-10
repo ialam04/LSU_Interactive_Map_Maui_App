@@ -177,7 +177,7 @@ namespace InteractiveLSUMap
 
                 Console.WriteLine($"Final location data: {JsonSerializer.Serialize(classLocationsData)}"); // Debug log
 
-                mapView.InvokeJavaScriptFunction($"window.userClasses = {JsonSerializer.Serialize(classLocationsData)};");
+                await mapView.InvokeJavaScriptFunction($"window.userClasses = {JsonSerializer.Serialize(classLocationsData)};");
             }
             catch (Exception ex)
             {
@@ -241,23 +241,57 @@ namespace InteractiveLSUMap
 
         private async void OnMemoriesChanged(object sender, EventArgs e)
         {
-            await UpdateMemoryPinsData();
-            if (currentFilter == "memories")
+            try
             {
-                await mapView.InvokeJavaScriptFunction("showPins('memories')");
+                await UpdateMemoryPinsData();
+                if (currentFilter == "memories")
+                {
+                    await Task.Delay(100); // Small delay to ensure data is set
+                    await mapView.InvokeJavaScriptFunction("showPins('memories')");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in OnMemoriesChanged: {ex.Message}");
             }
         }
 
         private async Task UpdateMemoryPinsData()
         {
-            var memoriesData = memoriesVM.Memories
-                .Where(m => m.Coordinates != null)
-                .ToDictionary(
-                    m => m.Caption,
-                    m => new { coordinates = m.Coordinates, caption = m.Caption, date = m.Date }
-                );
+            try
+            {
+                // Debug logging
+                Console.WriteLine($"Updating memories, count: {memoriesVM.Memories.Count}");
 
-            await mapView.InvokeJavaScriptFunction($"window.userMemories = {JsonSerializer.Serialize(memoriesData)};");
+                var memoriesData = memoriesVM.Memories
+                    .Where(m => m.Coordinates != null)
+                    .ToDictionary(
+                        m => m.Caption,
+                        m => new
+                        {
+                            coordinates = new[] { m.Coordinates[0], m.Coordinates[1] }, // Ensure correct format
+                            date = m.Date,
+                            caption = m.Caption
+                        }
+                    );
+
+                // Debug logging
+                Console.WriteLine($"Memories data: {JsonSerializer.Serialize(memoriesData)}");
+
+                // Update JavaScript and force refresh
+                await mapView.InvokeJavaScriptFunction($"window.userMemories = {JsonSerializer.Serialize(memoriesData)};");
+
+                // Force refresh of pins if currently showing memories
+                if (currentFilter == "memories")
+                {
+                    await mapView.InvokeJavaScriptFunction("clearMarkers();");
+                    await mapView.InvokeJavaScriptFunction("showPins('memories');");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error updating memory pins: {ex.Message}");
+            }
         }
 
         private async void OnProfileButtonClicked(object sender, EventArgs e)
